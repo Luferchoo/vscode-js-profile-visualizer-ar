@@ -4,18 +4,21 @@
   "workspaces": [
     "packages/vscode-js-profile-core",
     "packages/vscode-js-profile-flame",
-    "packages/vscode-js-profile-table"
+    "packages/vscode-js-profile-table",
+    "packages/vscode-js-profile-ar"
   ],
   "scripts": {
     "clean": "rimraf -g \"packages/*/out\"",
-    "compile": "npm run clean && npm run compile:core && concurrently \"npm:compile:table\" \"npm:compile:flame\"",
+    "compile": "npm run clean && npm run compile:core && concurrently \"npm:compile:table\" \"npm:compile:flame\" \"npm:compile:ar\"",
     "compile:core": "npm run -w vscode-js-profile-core compile",
     "compile:table": "npm run -w vscode-js-profile-table compile",
     "compile:flame": "npm run -w vscode-js-profile-flame compile",
-    "watch": "concurrently \"npm:watch:core\" \"npm:watch:flame\" \"npm:watch:table\"",
+    "compile:ar": "npm run -w vscode-js-profile-ar compile",
+    "watch": "concurrently \"npm:watch:core\" \"npm:watch:flame\" \"npm:watch:table\" \"npm:watch:ar\"",
     "watch:core": "npm run -w vscode-js-profile-core watch",
     "watch:table": "npm run -w vscode-js-profile-table watch",
     "watch:flame": "npm run -w vscode-js-profile-flame watch",
+    "watch:ar": "npm run -w vscode-js-profile-ar watch",
     "pack": "npm run compile && npm run -ws pack",
     "fmt": "prettier --write \"packages/**/*.{ts,tsx,css}\" \"!**/out/**\" && npm run test:lint -- --fix",
     "test": "concurrently \"npm:test:*\"",

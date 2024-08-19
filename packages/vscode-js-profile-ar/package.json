@@ -1,6 +1,5 @@
 {
-  "name": "ar-flamegraphs-extension",
-  "displayName": "ar_flamegraphs_extension",
+  "name": "vscode-js-profile-ar",
   "description": "A extension created to deploy flamegraphs on HoloLens 2",
   "version": "0.0.1",
   "engines": {
@@ -46,7 +45,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "ar-flamegraphs-extension": "file:",
+    "vscode-js-profile-ar": "file:",
     "bufferutil": "^4.0.8",
     "utf-8-validate": "^6.0.4",
     "ws": "^8.17.1"
