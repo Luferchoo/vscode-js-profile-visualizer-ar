@@ -1,4 +1,4 @@
-import * as vscode from 'vscode';
+/*import * as vscode from 'vscode';
 import * as WebSocket from 'ws';
 
 let server: WebSocket.Server | null = null;
@@ -50,4 +50,58 @@ export function deactivate() {
             console.log('WebSocket server closed.');
         });
     }
+}*/
+import * as vscode from 'vscode';
+import * as WebSocket from 'ws';
+
+let server: WebSocket.Server | null = null;
+
+export function activate(context: vscode.ExtensionContext) {
+    console.log('WebSocket extension activated.');
+
+    // Start WebSocket server immediately when the extension is activated
+    if (!server) {
+        // Start WebSocket server
+        server = new WebSocket.Server({ port: 8080 });
+
+        server.on('connection', (ws) => {
+            console.log('Client connected');
+
+            ws.on('message', (message) => {
+                console.log('Received:', message);
+
+                // Example: Send a response back to the client
+                ws.send(`Received your message: ${message}`);
+            });
+
+            ws.on('close', () => {
+                console.log('Client disconnected');
+            });
+
+            ws.on('error', (error) => {
+                console.error('WebSocket error:', error);
+            });
+        });
+
+        server.on('listening', () => {
+            console.log('WebSocket server is listening on ws://localhost:8080');
+        });
+
+        server.on('error', (error) => {
+            console.error('WebSocket server error:', error);
+        });
+
+        console.log('WebSocket server running on ws://localhost:8080');
+    } else {
+        console.log('WebSocket server already running.');
+    }
 }
+
+export function deactivate() {
+    if (server) {
+        server.close(() => {
+            console.log('WebSocket server closed.');
+        });
+    }
+}
+

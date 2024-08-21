@@ -8,16 +8,10 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "extension.startWebSocketServer",
-        "title": "Start WebSocket Server"
-      }
-    ]
-  },
   "scripts": {
     "vscode:prepublish": "npm run package",
     "compile": "webpack",
