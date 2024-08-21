@@ -7,7 +7,7 @@
   "configurations": [
     {
       "name": "Extension",
-      "type": "pwa-extensionHost",
+      "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "debugWebviews": true,
@@ -15,17 +15,19 @@
         "sourceMapPathOverrides": {
           "webpack://?:*/../*": "${workspaceFolder}/packages/*",
           "webpack://vscode-js-profile-table/./*": "${workspaceFolder}/packages/vscode-js-profile-table/*",
-          "webpack://vscode-js-profile-flame/./*": "${workspaceFolder}/packages/vscode-js-profile-flame/*"
+          "webpack://vscode-js-profile-flame/./*": "${workspaceFolder}/packages/vscode-js-profile-flame/*",
         }
       },
       "sourceMapPathOverrides": {
         "webpack://?:*/../*": "${workspaceFolder}/packages/*",
         "webpack://vscode-js-profile-table/./*": "${workspaceFolder}/packages/vscode-js-profile-table/*",
-        "webpack://vscode-js-profile-flame/./*": "${workspaceFolder}/packages/vscode-js-profile-flame/*"
+        "webpack://vscode-js-profile-flame/./*": "${workspaceFolder}/packages/vscode-js-profile-flame/*",
+        "webpack://vscode-js-profile-ar/./*": "${workspaceFolder}/packages/vscode-js-profile-ar/*"
       },
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}/packages/vscode-js-profile-table",
         "--extensionDevelopmentPath=${workspaceFolder}/packages/vscode-js-profile-flame",
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/vscode-js-profile-ar",
         "--extensionDevelopmentPath=${workspaceFolder}/../vscode-js-debug/out"
       ]
     }
