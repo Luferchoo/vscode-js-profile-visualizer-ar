@@ -1,20 +1,22 @@
 import * as vscode from 'vscode';
-import WebSocket, { Server } from 'ws';
+import WebSocket from 'ws';
 
-let server: Server | null = null;
+const { Server } = WebSocket;
+
+let server: WebSocket.Server | null = null;
 let connectedClient: WebSocket | null = null;
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('WebSocket extension activated.');
 
     if (!server) {
-        server = new WebSocket.Server({ port: 8080 });
+        server = new Server({ port: 8080 });
 
-        server.on('connection', (ws) => {
+        server.on('connection', (ws: WebSocket) => {
             console.log('Client connected');
             connectedClient = ws;
 
-            ws.on('message', (message) => {
+            ws.on('message', (message: string) => {
                 console.log('Received:', message);
                 ws.send(`Received your message: ${message}`);
             });
@@ -24,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
                 connectedClient = null;
             });
 
-            ws.on('error', (error) => {
+            ws.on('error', (error: Error) => {
                 console.error('WebSocket error:', error);
             });
         });
@@ -33,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
             console.log('WebSocket server is listening on ws://localhost:8080');
         });
 
-        server.on('error', (error) => {
+        server.on('error', (error: Error) => {
             console.error('WebSocket server error:', error);
         });
 
@@ -53,7 +55,6 @@ export function activate(context: vscode.ExtensionContext) {
     });
 }
 
-// Función exportada para enviar mensajes al cliente conectado
 export function sendMessage(message: string) {
     if (connectedClient && connectedClient.readyState === WebSocket.OPEN) {
         connectedClient.send(message);
