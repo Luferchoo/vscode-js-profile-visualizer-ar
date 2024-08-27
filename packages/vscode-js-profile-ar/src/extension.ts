@@ -1,20 +1,19 @@
 import * as vscode from 'vscode';
 import WebSocket from 'ws';
-
-const { Server } = WebSocket;
-
-let server: WebSocket.Server | null = null;
-let connectedClient: WebSocket | null = null;
+import { WebSocketManager } from './globals';
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('WebSocket extension activated.');
 
-    if (!server) {
-        server = new Server({ port: 8080 });
+    const wsManager = WebSocketManager.getInstance();
 
-        server.on('connection', (ws: WebSocket) => {
+    if (!wsManager.isServerActive()) {
+        const serverInstance = new WebSocket.Server({ port: 8080 });
+        wsManager.setServer(serverInstance);
+
+        serverInstance.on('connection', (ws: WebSocket) => {
             console.log('Client connected');
-            connectedClient = ws;
+            wsManager.setConnectedClient(ws);
 
             ws.on('message', (message: string) => {
                 console.log('Received:', message);
@@ -23,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
 
             ws.on('close', () => {
                 console.log('Client disconnected');
-                connectedClient = null;
+                wsManager.setConnectedClient(null);
             });
 
             ws.on('error', (error: Error) => {
@@ -31,11 +30,11 @@ export function activate(context: vscode.ExtensionContext) {
             });
         });
 
-        server.on('listening', () => {
+        serverInstance.on('listening', () => {
             console.log('WebSocket server is listening on ws://localhost:8080');
         });
 
-        server.on('error', (error: Error) => {
+        serverInstance.on('error', (error: Error) => {
             console.error('WebSocket server error:', error);
         });
 
@@ -46,9 +45,10 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push({
         dispose: () => {
-            if (server) {
-                server.close(() => {
+            if (wsManager.isServerActive()) {
+                wsManager.server?.close(() => {
                     console.log('WebSocket server closed.');
+                    wsManager.setServer(null);
                 });
             }
         }
@@ -56,18 +56,27 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function sendMessage(message: string) {
-    if (connectedClient && connectedClient.readyState === WebSocket.OPEN) {
-        connectedClient.send(message);
-        console.log(`Message sent to client: ${message}`);
+    const wsManager = WebSocketManager.getInstance();
+    const client = wsManager.connectedClient;
+
+    if (wsManager.isServerActive()) {
+        if (client && client.readyState === WebSocket.OPEN) {
+            client.send(message);
+            console.log(`Message sent to client: ${message}`);
+        } else {
+            console.log('No client is currently connected or client connection is not open.');
+        }
     } else {
-        console.log('No client is currently connected or client connection is not open.');
+        console.log('WebSocket server is not active.');
     }
 }
 
 export function deactivate() {
-    if (server) {
-        server.close(() => {
+    const wsManager = WebSocketManager.getInstance();
+    if (wsManager.isServerActive()) {
+        wsManager.server?.close(() => {
             console.log('WebSocket server closed.');
+            wsManager.setServer(null);
         });
     }
 }
