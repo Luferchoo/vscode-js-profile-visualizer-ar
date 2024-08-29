@@ -16,6 +16,7 @@
           "webpack://?:*/../*": "${workspaceFolder}/packages/*",
           "webpack://vscode-js-profile-table/./*": "${workspaceFolder}/packages/vscode-js-profile-table/*",
           "webpack://vscode-js-profile-flame/./*": "${workspaceFolder}/packages/vscode-js-profile-flame/*",
+          "webpack://vscode-js-profile-ar/./*": "${workspaceFolder}/packages/vscode-js-profile-ar/*"
         }
       },
       "sourceMapPathOverrides": {
