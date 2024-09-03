@@ -20,6 +20,20 @@ module.exports = (dirname, target) => ({
           fallback: {
             path: require.resolve('path-browserify'),
             os: require.resolve('os-browserify/browser'),
+            vm: require.resolve('vm-browserify'),
+            assert: require.resolve('assert/'),
+            util: require.resolve('util/'),
+            "fs": false,
+            "zlib": require.resolve("browserify-zlib"),
+            "stream": require.resolve("stream-browserify"),
+            "crypto": require.resolve("crypto-browserify"),
+            "http": require.resolve("stream-http"),
+            "https": require.resolve("https-browserify"),
+            "url": require.resolve("url/"),
+            "net": false,
+            "tls": false,
+            "buffer": require.resolve("buffer/"),
+            "ws": false
           },
         }),
   },
@@ -39,6 +53,7 @@ module.exports = (dirname, target) => ({
       },
       {
         test: /\.ts$/,
+        exclude: /node_modules/,
         loader: 'ts-loader',
         options: {
           configFile: 'tsconfig.json',

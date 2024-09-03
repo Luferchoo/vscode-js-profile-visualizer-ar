@@ -8,9 +8,6 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onStartupFinished"
-  ],
   "main": "./out/extension.js",
   "scripts": {
     "vscode:prepublish": "npm run package",

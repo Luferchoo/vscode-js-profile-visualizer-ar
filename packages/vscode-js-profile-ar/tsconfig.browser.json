@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "Node16",
+    //"types": ["node", "resize-observer-browser"]
+  }
+}

@@ -1,5 +1,6 @@
 {
 	"extends": "../../scripts/tsconfig.json",
+	"include": ["src/**/*"],
 	"compilerOptions": {
 		"module": "Node16",
 		"rootDir": "src",
