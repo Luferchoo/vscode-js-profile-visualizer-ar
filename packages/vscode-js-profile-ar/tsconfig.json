@@ -1,9 +1,9 @@
 {
 	"extends": "../../scripts/tsconfig.json",
-	"include": ["src/**/*"],
+	"include": ["src", "../vscode-js-profile-core/src/types"],
 	"compilerOptions": {
 		"module": "Node16",
-		"rootDir": "src",
+		"outDir": "out",
 		"moduleResolution": "Node16"
 	}
 }

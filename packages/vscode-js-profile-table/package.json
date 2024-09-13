@@ -86,7 +86,6 @@
   "dependencies": {
     "@vscode/codicons": "^0.0.35",
     "pretty-bytes": "^6.1.1",
-    "vscode-js-profile-core": "*",
-    "vscode-js-profile-ar": "*"
+    "vscode-js-profile-core": "*"
   }
 }
