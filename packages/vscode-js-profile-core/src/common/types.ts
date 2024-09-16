@@ -75,4 +75,9 @@ export interface ICallHeapGraph {
   inner: GraphRPCCall;
 }
 
-export type Message = IOpenDocumentMessage | IRunCommand | IReopenWithEditor | ICallHeapGraph;
+export interface IArFlameGraphMessage {
+  type: 'arFlameGraphRequested';
+  command: string;
+}
+
+export type Message = IOpenDocumentMessage | IRunCommand | IReopenWithEditor | ICallHeapGraph | IArFlameGraphMessage;

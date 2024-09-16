@@ -6,7 +6,7 @@ import WebSocket from 'ws';
 import { WebSocketManager } from './globals';
 
 export function activate(context: vscode.ExtensionContext) {
-    console.log('WebSocket extension activated.');
+    console.log('AR Flame Graph extension activated.');
 
     const wsManager = WebSocketManager.getInstance();
 
@@ -46,31 +46,35 @@ export function activate(context: vscode.ExtensionContext) {
         console.log('WebSocket server already running.');
     }
 
-    context.subscriptions.push({
-        dispose: () => {
-            if (wsManager.isServerActive()) {
-                wsManager.server?.close(() => {
-                    console.log('WebSocket server closed.');
-                    wsManager.setServer(null);
-                });
-            }
+    const disposable = vscode.commands.registerCommand('arFlameGraph.open', () => {
+        if (wsManager.isServerActive() && wsManager.connectedClient) {
+          sendMessage('openFlameGraph');
+        } else {
+          vscode.window.showErrorMessage('La conexión WebSocket no está activa.');
         }
-    });
+      });
+    
+      context.subscriptions.push(disposable, {
+        dispose: () => {
+          if (wsManager.isServerActive()) {
+            wsManager.server?.close(() => {
+              console.log('Servidor WebSocket cerrado.');
+              wsManager.setServer(null);
+            });
+          }
+        }
+      });
 }
 
 export function sendMessage(message: string) {
     const wsManager = WebSocketManager.getInstance();
     const client = wsManager.connectedClient;
 
-    if (wsManager.isServerActive()) {
-        if (client && client.readyState === WebSocket.OPEN) {
-            client.send(message);
-            console.log(`Message sent to client: ${message}`);
-        } else {
-            console.log('No client is currently connected or client connection is not open.');
-        }
+    if (wsManager.isServerActive() && client && client.readyState === WebSocket.OPEN) {
+        client.send(message);
+        console.log(`Message sent to client: ${message}`);
     } else {
-        console.log('WebSocket server is not active.');
+        console.log('Unable to send message: WebSocket connection is not active or open.');
     }
 }
 

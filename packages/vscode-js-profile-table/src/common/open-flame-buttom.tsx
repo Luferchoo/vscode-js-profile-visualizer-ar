@@ -7,9 +7,7 @@ import { FunctionComponent, h } from 'preact';
 import { useCallback, useContext } from 'preact/hooks';
 import { ToggleButton } from 'vscode-js-profile-core/out/esm/client/toggle-button';
 import { VsCodeApi } from 'vscode-js-profile-core/out/esm/client/vscodeApi';
-import { IReopenWithEditor } from 'vscode-js-profile-core/out/esm/common/types';
-//import { WebSocketManager } from 'vscode-js-profile-ar/src/globals'; // Asegúrate de que la ruta sea correcta
-import { sendMessage } from 'vscode-js-profile-ar/src/extension'; // Asegúrate de que la ruta sea correcta
+import { IReopenWithEditor, IArFlameGraphMessage } from 'vscode-js-profile-core/out/esm/common/types';
 
 const OpenFlameButton: FunctionComponent<{ viewType: string; requireExtension: string }> = ({
   viewType,
@@ -19,12 +17,10 @@ const OpenFlameButton: FunctionComponent<{ viewType: string; requireExtension: s
   //const wsManager = WebSocketManager.getInstance(); // Usa WebSocketManager para manejar la conexión WebSocket
 
   const closeFlameGraph = useCallback(() => {
-    // Envía el mensaje WebSocket
-    //if (wsManager.server && wsManager.connectedClient) {
-      sendMessage('flameGraphRequested');
-    //} else {
-      //console.log('WebSocket connection is not established.');
-    //}
+    vscode.postMessage<IArFlameGraphMessage>({
+      type: 'arFlameGraphRequested',
+      command: 'arFlameGraph.open'
+    });
 
     // Envía el mensaje de postMessage
     vscode.postMessage<IReopenWithEditor>({
