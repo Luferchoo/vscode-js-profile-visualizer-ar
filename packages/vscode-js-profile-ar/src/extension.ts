@@ -47,34 +47,40 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     const disposable = vscode.commands.registerCommand('arFlameGraph.open', () => {
+        const wsManager = WebSocketManager.getInstance();
         if (wsManager.isServerActive() && wsManager.connectedClient) {
-          sendMessage('openFlameGraph');
+            const ws = wsManager.connectedClient;
+            ws.send('openFlameGraph');
         } else {
-          vscode.window.showErrorMessage('La conexión WebSocket no está activa.');
+            vscode.window.showErrorMessage('La conexión WebSocket no está activa.');
         }
-      });
+    });
     
-      context.subscriptions.push(disposable, {
+    context.subscriptions.push(disposable, {
         dispose: () => {
-          if (wsManager.isServerActive()) {
-            wsManager.server?.close(() => {
-              console.log('Servidor WebSocket cerrado.');
-              wsManager.setServer(null);
-            });
-          }
+            if (wsManager.isServerActive()) {
+                wsManager.server?.close(() => {
+                    console.log('Servidor WebSocket cerrado.');
+                    wsManager.setServer(null);
+                });
+            }
         }
-      });
+    });
 }
 
 export function sendMessage(message: string) {
     const wsManager = WebSocketManager.getInstance();
-    const client = wsManager.connectedClient;
+    const server = wsManager.server;
 
-    if (wsManager.isServerActive() && client && client.readyState === WebSocket.OPEN) {
-        client.send(message);
-        console.log(`Message sent to client: ${message}`);
+    if (wsManager.isServerActive() && server) {
+        server.clients.forEach(client => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(message);
+            }
+        });
+        console.log(`Message sent to all connected clients: ${message}`);
     } else {
-        console.log('Unable to send message: WebSocket connection is not active or open.');
+        console.log('Unable to send message: WebSocket server is not active.');
     }
 }
 
