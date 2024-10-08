@@ -63,7 +63,7 @@ export class CpuProfileEditorProvider
           reopenWithEditor(document.uri, message.viewType, message.requireExtension);
           return;
         case 'arFlameGraphRequested':
-          vscode.commands.executeCommand('arFlameGraph.open');
+          vscode.commands.executeCommand('arFlameGraph.open',document.uri);
           break;
         default:
           console.warn(`Unknown request from webview: ${JSON.stringify(message)}`);

@@ -2,9 +2,9 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 import * as vscode from 'vscode';
+import { ArCpuProfileEditorProvider } from 'vscode-js-profile-core/src/cpu/arCpuProfileEditorProvider';
 import WebSocket from 'ws';
 import { WebSocketManager } from './globals';
-
 export function activate(context: vscode.ExtensionContext) {
     console.log('AR Flame Graph extension activated.');
 
@@ -37,25 +37,36 @@ export function activate(context: vscode.ExtensionContext) {
             console.log('WebSocket server is listening on ws://localhost:8080');
         });
 
-        serverInstance.on('error', (error: Error) => {
-            console.error('WebSocket server error:', error);
-        });
-
         console.log('WebSocket server running on ws://localhost:8080');
     } else {
         console.log('WebSocket server already running.');
     }
 
-    const disposable = vscode.commands.registerCommand('arFlameGraph.open', () => {
+    const disposable = vscode.commands.registerCommand('arFlameGraph.open', async (uri: vscode.Uri) => {
         const wsManager = WebSocketManager.getInstance();
         if (wsManager.isServerActive() && wsManager.connectedClient) {
-            const ws = wsManager.connectedClient;
+          const ws = wsManager.connectedClient;
+          console.log('esta es la uri en la extension',uri);
+          if (uri) {
+            const editorProvider = new ArCpuProfileEditorProvider();
+            console.log('uri dentro de la extension', uri);
+            // Pasar la URI al método openCustomDocument
+            const document = await editorProvider.openCustomDocument(uri);
+            console.log('document', document);
+            const relevantData = editorProvider.extractRelevantData(document);
+            
+            // Envía el archivo cpuprofile y la información relevante
+            ws.send(JSON.stringify({ type: 'cpuprofile', content: relevantData }));
+            // Envía el mensaje para abrir el gráfico de llamas
             ws.send('openFlameGraph');
+          } else {
+            vscode.window.showErrorMessage('No se ha establecido la URI.');
+          }
         } else {
-            vscode.window.showErrorMessage('La conexión WebSocket no está activa.');
+          vscode.window.showErrorMessage('La conexión WebSocket no está activa.');
         }
-    });
-    
+      });
+
     context.subscriptions.push(disposable, {
         dispose: () => {
             if (wsManager.isServerActive()) {
